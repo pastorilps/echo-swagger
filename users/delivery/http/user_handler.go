@@ -1,0 +1,78 @@
+package http
+
+import (
+	"context"
+	"log"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/pastorilps/echo-swagger/middleware"
+	"github.com/pastorilps/echo-swagger/users/domain"
+	echoSwagger "github.com/swaggo/echo-swagger"
+)
+
+type Response struct {
+	Message string `json:"message"`
+}
+
+type UserHandler struct {
+	AUsecase domain.UserUseCase
+}
+
+func NewUserHandler(e *echo.Echo, uc domain.UserUseCase) {
+	handler := &UserHandler{
+		AUsecase: uc,
+	}
+
+	// Routes
+	e.GET("/v1/users", handler.GetAllUsers)
+	e.GET("/", HealthCheck)
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+}
+
+func (u *UserHandler) GetAllUsers(c echo.Context) error {
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	data, err := u.AUsecase.GetAllUsers()
+	if err != nil {
+		return c.JSON(getStatusCode(err), Response{Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func getStatusCode(err error) int {
+	if err == nil {
+		return http.StatusOK
+	}
+
+	log.Fatalln(err)
+
+	switch err {
+	case middleware.ErrInternalServerError:
+		return http.StatusInternalServerError
+	case middleware.ErrorNotFound:
+		return http.StatusNotFound
+	case middleware.ErrConflict:
+		return http.StatusConflict
+	default:
+		return http.StatusInternalServerError
+	}
+}
+
+// HealthCheck godoc
+// @Summary Show the status of server.
+// @Description get the status of server.
+// @Tags root
+// @Accept */*
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router / [get]
+func HealthCheck(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"data": "Server is up and running",
+	})
+}
