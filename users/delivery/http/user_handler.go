@@ -9,6 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/pastorilps/echo-swagger/middleware"
 	"github.com/pastorilps/echo-swagger/users/domain"
+	"github.com/pastorilps/echo-swagger/users/entity"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
@@ -29,7 +30,23 @@ func NewUserHandler(e *echo.Echo, uc domain.UserUseCase) {
 	e.GET("/", HealthCheck)
 	e.GET("/v1/users", handler.GetAllUsers)
 	e.GET("/v1/users/:id", handler.GetUserById)
+	e.POST("/v1/users/create", handler.CreateUser)
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
+}
+
+func (u *UserHandler) CreateUser(c echo.Context) error {
+	l := new(entity.Users)
+	if err := c.Bind(l); err != nil {
+		return err
+	}
+
+	_, err := u.AUsecase.CreateUsers(l)
+	if err != nil {
+		return c.JSON(getStatusCode(err), Response{Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, l)
 }
 
 func (u *UserHandler) GetUserById(c echo.Context) error {

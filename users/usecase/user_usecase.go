@@ -3,6 +3,7 @@ package usecase
 import (
 	"github.com/pastorilps/echo-swagger/users/domain"
 	"github.com/pastorilps/echo-swagger/users/entity"
+	"github.com/sirupsen/logrus"
 )
 
 type userUseCase struct {
@@ -13,6 +14,15 @@ func NewUserUseCase(ur domain.UserRepository) domain.UserUseCase {
 	return &userUseCase{
 		userRepo: ur,
 	}
+}
+
+func (u *userUseCase) CreateUsers(es *entity.Users) (*entity.Users, error) {
+	res, err := u.userRepo.CreateUser(es)
+	if err != nil {
+		logrus.Error("Error return data for saving in database", err)
+	}
+
+	return res, err
 }
 
 func (u *userUseCase) GetUserById(id int16) (*entity.Users, error) {

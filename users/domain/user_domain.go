@@ -7,9 +7,11 @@ import (
 type UserUseCase interface {
 	GetAllUsers() ([]*entity.Users, error)
 	GetUserById(id int16) (*entity.Users, error)
+	CreateUsers(es *entity.Users) (*entity.Users, error)
 }
 
 type UserRepository interface {
 	FetchAllUsers() ([]*entity.Users, error)
 	FetchUserBydId(id int16) (*entity.Users, error)
+	CreateUser(es *entity.Users) (ds *entity.Users, err error)
 }

@@ -18,6 +18,42 @@ func NewUserRepo(Conn *sql.DB) domain.UserRepository {
 	return &userRepository{Conn}
 }
 
+func (u *userRepository) CreateUser(es *entity.Users) (ds *entity.Users, err error) {
+	query := `insert into public.user (name, email, password, picture, newsletter) values ($1, $2, $3, $4, $5)`
+	es.Password = middleware.SHA256Encoder(es.Password)
+
+	stmt, err := u.Conn.Prepare(query)
+	if err != nil {
+		logrus.Error("Error in pushing data in database", err)
+		return
+	}
+
+	res, err := stmt.Exec(
+		es.Name,
+		es.Email,
+		es.Password,
+		es.Picture,
+		es.Newsletter,
+	)
+	if err != nil {
+		logrus.Error("Error to attach data struct database", err)
+		return
+	}
+
+	affect, err := res.RowsAffected()
+	if err != nil {
+		return
+	}
+
+	if affect != 1 {
+		logrus.Error("Error in affect in database", err)
+		return
+	}
+
+	return
+
+}
+
 func (u *userRepository) FetchUserBydId(id int16) (*entity.Users, error) {
 	query := `select * from public.user  where id = $1`
 
