@@ -17,6 +17,28 @@
     "version": "1.0"
   },
   "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Get Users"
+        ],
+        "summary": "Find users",
+        "description": "Returns multiple users",
+        "operationId": "getUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Users not found"
+          }
+        }
+      }
+    },
     "/users/{userId}": {
       "get": {
         "tags": [
@@ -46,28 +68,6 @@
           },
           "404": {
             "description": "User not found"
-          }
-        }
-      }
-    },
-    "/users": {
-      "get": {
-        "tags": [
-          "Get Users"
-        ],
-        "summary": "Find users",
-        "description": "Returns multiple users",
-        "operationId": "getUsers",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "successful operation"
-          },
-          "400": {
-            "description": "Invalid ID supplied"
-          },
-          "404": {
-            "description": "Users not found"
           }
         }
       }
