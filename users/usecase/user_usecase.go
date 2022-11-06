@@ -15,6 +15,15 @@ func NewUserUseCase(ur domain.UserRepository) domain.UserUseCase {
 	}
 }
 
+func (u *userUseCase) GetUserById(id int16) (*entity.Users, error) {
+	res, err := u.userRepo.FetchUserBydId(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 func (u *userUseCase) GetAllUsers() ([]*entity.Users, error) {
 	list, err := u.userRepo.FetchAllUsers()
 	if err != nil {

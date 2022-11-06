@@ -38,8 +38,9 @@ func init() {
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host localhost:3001
-// @BasePath /
+// @BasePath /v1
 // @schemes http
+
 func main() {
 	var (
 		dbHost = os.Getenv("HOST_DATABASE")

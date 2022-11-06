@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pastorilps/echo-swagger/middleware"
@@ -25,9 +26,20 @@ func NewUserHandler(e *echo.Echo, uc domain.UserUseCase) {
 	}
 
 	// Routes
-	e.GET("/v1/users", handler.GetAllUsers)
 	e.GET("/", HealthCheck)
+	e.GET("/v1/users", handler.GetAllUsers)
+	e.GET("/v1/users/:id", handler.GetUserById)
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
+}
+
+func (u *UserHandler) GetUserById(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	uId, err := u.AUsecase.GetUserById(int16(id))
+	if err != nil {
+		return c.JSON(getStatusCode(err), Response{Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, uId)
 }
 
 func (u *UserHandler) GetAllUsers(c echo.Context) error {

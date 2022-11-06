@@ -24,14 +24,70 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/users/{userId}": {
+          "get": {
+            "tags": [
+              "Get User By Id"
+            ],
+            "summary": "Find user by ID",
+            "description": "Returns a single user",
+            "operationId": "getUserById",
+            "parameters": [
+              {
+                "name": "userId",
+                "in": "path",
+                "description": "ID of user to return",
+                "required": true,
+                "schema": {
+                  "type": "integer",
+                  "format": "int16"
+                }
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "successful operation"
+              },
+              "400": {
+                "description": "Invalid ID supplied"
+              },
+              "404": {
+                "description": "User not found"
+              }
+            }
+          }
+        },
+        "/users": {
+          "get": {
+            "tags": [
+              "Get Users"
+            ],
+            "summary": "Find users",
+            "description": "Returns multiple users",
+            "operationId": "getUsers",
+            "parameters": [],
+            "responses": {
+              "200": {
+                "description": "successful operation"
+              },
+              "400": {
+                "description": "Invalid ID supplied"
+              },
+              "404": {
+                "description": "Users not found"
+              }
+            }
+          }
+        }
+      }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:3001",
-	BasePath:         "/",
+	BasePath:         "/v1",
 	Schemes:          []string{"http"},
 	Title:            "Echo Swagger Example API",
 	Description:      "This is a sample server server.",

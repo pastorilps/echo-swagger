@@ -1,24 +1,80 @@
 {
-    "schemes": [
-        "http"
-    ],
-    "swagger": "2.0",
-    "info": {
-        "description": "This is a sample server server.",
-        "title": "Echo Swagger Example API",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
-        "version": "1.0"
+  "basePath": "/v1",
+  "host": "localhost:3001",
+  "info": {
+    "contact": {
+      "email": "support@swagger.io",
+      "name": "API Support",
+      "url": "http://www.swagger.io/support"
     },
-    "host": "localhost:3001",
-    "basePath": "/",
-    "paths": {}
+    "description": "This is a sample server server.",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "termsOfService": "http://swagger.io/terms/",
+    "title": "Echo Swagger Example API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "Get User By Id"
+        ],
+        "summary": "Find user by ID",
+        "description": "Returns a single user",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to return",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int16"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Get Users"
+        ],
+        "summary": "Find users",
+        "description": "Returns multiple users",
+        "operationId": "getUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Users not found"
+          }
+        }
+      }
+    }
+  },
+  "schemas": [
+    "http"
+  ],
+  "swagger": "2.0"
 }
