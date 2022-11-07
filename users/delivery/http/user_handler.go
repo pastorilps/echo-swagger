@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	_ "github.com/pastorilps/echo-swagger/app/docs"
 	"github.com/pastorilps/echo-swagger/middleware"
 	"github.com/pastorilps/echo-swagger/users/domain"
 	"github.com/pastorilps/echo-swagger/users/entity"
@@ -37,6 +38,15 @@ func NewUserHandler(e *echo.Echo, uc domain.UserUseCase) {
 
 }
 
+// DeleteUser godoc
+// @Summary Delete User.
+// @Description Delete User Data.
+// @Tags Delete-User
+// @Accept json
+// @Param id path integer true "User ID"
+// @Produce json
+// @Success 200
+// @Router /v1/users/delete/{id} [delete]
 func (u *UserHandler) DeleteUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	err = u.AUsecase.DeleteUser(int16(id))
@@ -44,9 +54,19 @@ func (u *UserHandler) DeleteUser(c echo.Context) error {
 		return c.JSON(getStatusCode(err), Response{Message: err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, id)
+	return c.JSON(http.StatusOK, "Usuário deletado com sucesso!")
 }
 
+// UpdateUser godoc
+// @Summary Update User.
+// @Description Update User Data.
+// @Tags Update-User
+// @Accept json
+// @Param id path integer true "User ID"
+// @Param Body body entity.Send_User true "The body to update a user"
+// @Produce json
+// @Success 200 {object} entity.Send_User
+// @Router /v1/users/update/{id} [put]
 func (u *UserHandler) UpdateUser(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -74,6 +94,15 @@ func (u *UserHandler) UpdateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, list)
 }
 
+// CreateUser godoc
+// @Summary Create User.
+// @Description Create User.
+// @Tags Create-User
+// @Accept json
+// @Param Body body entity.Send_User true "The body to create a user"
+// @Produce json
+// @Success 200 {object} entity.Users
+// @Router /v1/users/create [post]
 func (u *UserHandler) CreateUser(c echo.Context) error {
 	l := new(entity.Users)
 	if err := c.Bind(l); err != nil {
@@ -88,6 +117,15 @@ func (u *UserHandler) CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, l)
 }
 
+// GetUser godoc
+// @Summary Show an user.
+// @Description Get user.
+// @Tags Get-User
+// @Param id path integer true "User ID"
+// @Accept */*
+// @Produce json
+// @Success 200 {object} entity.Users
+// @Router /v1/users/{id} [get]
 func (u *UserHandler) GetUserById(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	uId, err := u.AUsecase.GetUserById(int16(id))
@@ -98,6 +136,14 @@ func (u *UserHandler) GetUserById(c echo.Context) error {
 	return c.JSON(http.StatusOK, uId)
 }
 
+// GetAllUsers godoc
+// @Summary Show all users.
+// @Description Get all users list.
+// @Tags Get-All-Users
+// @Accept */*
+// @Produce json
+// @Success 200 {object} entity.Users
+// @Router /v1/users [get]
 func (u *UserHandler) GetAllUsers(c echo.Context) error {
 	ctx := c.Request().Context()
 	if ctx == nil {
@@ -131,14 +177,6 @@ func getStatusCode(err error) int {
 	}
 }
 
-// HealthCheck godoc
-// @Summary Show the status of server.
-// @Description get the status of server.
-// @Tags root
-// @Accept */*
-// @Produce json
-// @Success 200 {object} map[string]interface{}
-// @Router / [get]
 func HealthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": "Server is up and running",

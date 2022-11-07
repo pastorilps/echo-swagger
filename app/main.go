@@ -25,7 +25,7 @@ func init() {
 	gotenv.Load()
 }
 
-// @title Echo Swagger Example API
+// @title Echo Swagger API
 // @version 1.0
 // @description This is a sample server server.
 // @termsOfService http://swagger.io/terms/
@@ -38,9 +38,8 @@ func init() {
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host localhost:3001
-// @BasePath /v1
+// @BasePath /
 // @schemes http
-
 func main() {
 	var (
 		dbHost = os.Getenv("HOST_DATABASE")

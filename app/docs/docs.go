@@ -25,59 +25,229 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/users": {
+        "/v1/users": {
             "get": {
-            "tags": [
-                "Get Users"
-            ],
-            "summary": "Find users",
-            "description": "Returns multiple users",
-            "operationId": "getUsers",
-            "parameters": [],
-            "responses": {
-                "200": {
-                "description": "successful operation"
-                },
-                "400": {
-                "description": "Invalid ID supplied"
-                },
-                "404": {
-                "description": "Users not found"
+                "description": "Get all users list.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Get-All-Users"
+                ],
+                "summary": "Show all users.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Users"
+                        }
+                    }
                 }
-            }
             }
         },
-        "/users/{userId}": {
-            "get": {
-            "tags": [
-                "Get User By Id"
-            ],
-            "summary": "Find user by ID",
-            "description": "Returns a single user",
-            "operationId": "getUserById",
-            "parameters": [
-                {
-                "name": "userId",
-                "in": "path",
-                "description": "ID of user to return",
-                "required": true,
-                "schema": {
-                    "type": "integer",
-                    "format": "int16"
-                }
-                }
-            ],
-            "responses": {
-                "200": {
-                "description": "successful operation"
-                },
-                "400": {
-                "description": "Invalid ID supplied"
-                },
-                "404": {
-                "description": "User not found"
+        "/v1/users/create": {
+            "post": {
+                "description": "Create User.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Create-User"
+                ],
+                "summary": "Create User.",
+                "parameters": [
+                    {
+                        "description": "The body to create a user",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Send_User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Users"
+                        }
+                    }
                 }
             }
+        },
+        "/v1/users/delete/{id}": {
+            "delete": {
+                "description": "Delete User Data.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Delete-User"
+                ],
+                "summary": "Delete User.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/v1/users/update/{id}": {
+            "put": {
+                "description": "Update User Data.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Update-User"
+                ],
+                "summary": "Update User.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "The body to update a user",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Send_User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Send_User"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/{id}": {
+            "get": {
+                "description": "Get user.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Get-User"
+                ],
+                "summary": "Show an user.",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Users"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.Send_User": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "newsletter",
+                "password",
+                "picture"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "test@test.com"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "User Name"
+                },
+                "newsletter": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "password": {
+                    "type": "string",
+                    "example": "b3f8b6283fce62d85c5b6334c8ee9a611aed144c3d93d11ef2759f6baabdc3b0"
+                },
+                "picture": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "entity.Users": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "test@test.com"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "name": {
+                    "type": "string",
+                    "example": "User Name"
+                },
+                "newsletter": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "password": {
+                    "type": "string",
+                    "example": "b3f8b6283fce62d85c5b6334c8ee9a611aed144c3d93d11ef2759f6baabdc3b0"
+                },
+                "picture": {
+                    "type": "integer",
+                    "example": 1
+                }
             }
         }
     }
@@ -87,9 +257,9 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:3001",
-	BasePath:         "/v1",
+	BasePath:         "/",
 	Schemes:          []string{"http"},
-	Title:            "Echo Swagger Example API",
+	Title:            "Echo Swagger API",
 	Description:      "This is a sample server server.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

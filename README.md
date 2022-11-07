@@ -20,7 +20,7 @@ go get -v github.com/swaggo/echo-swagger
 
 Generate the Swagger Specification.
 
-swag init -g app/main.go --output docs/app
+swag init -g .\app\main.go --output .\app\docs\
 
 If the operation is successful, you should see 3 new files inside folder docs/echosimple. These files are:
 
