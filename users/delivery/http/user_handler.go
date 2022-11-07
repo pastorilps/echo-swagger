@@ -31,8 +31,36 @@ func NewUserHandler(e *echo.Echo, uc domain.UserUseCase) {
 	e.GET("/v1/users", handler.GetAllUsers)
 	e.GET("/v1/users/:id", handler.GetUserById)
 	e.POST("/v1/users/create", handler.CreateUser)
+	e.PUT("/v1/users/update/:id", handler.UpdateUser)
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
+}
+
+func (u *UserHandler) UpdateUser(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusNotFound, Response{Message: err.Error()})
+	}
+
+	var receive entity.Receive_User
+	err = c.Bind(&receive)
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, err.Error())
+	}
+
+	receive.ID = int16(id)
+
+	ctx := c.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	list, err := u.AUsecase.UpdateUser(ctx, &receive)
+	if err != nil {
+		return c.JSON(getStatusCode(err), Response{Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, list)
 }
 
 func (u *UserHandler) CreateUser(c echo.Context) error {

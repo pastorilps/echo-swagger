@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
+	"log"
 
 	_ "github.com/pastorilps/echo-swagger/app/docs"
 	"github.com/pastorilps/echo-swagger/middleware"
@@ -16,6 +18,91 @@ type userRepository struct {
 
 func NewUserRepo(Conn *sql.DB) domain.UserRepository {
 	return &userRepository{Conn}
+}
+
+func (u *userRepository) UpdateUser(ctx context.Context, er *entity.Receive_User) (err error) {
+	query := `update public.user set name = $2, email = $3, password = $4, picture = $5, newsletter = $6 where id = $1`
+
+	stmt, err := u.Conn.PrepareContext(ctx, query)
+	if err != nil {
+		log.Fatalln("Error in receive parameters context", err)
+		return
+	}
+
+	res, err := stmt.ExecContext(ctx, er.ID, er.Name, er.Email, middleware.SHA256Encoder(er.Password), er.Picture, er.Newsletter)
+	if err != nil {
+		log.Fatalln("Error when sending data context for query consult", err)
+		return
+	}
+
+	affect, err := res.RowsAffected()
+	if err != nil {
+		return
+	}
+
+	if affect != 1 {
+		log.Fatalln("Weird Behavior. Total Affected", affect)
+		return
+	}
+
+	return
+}
+
+func (u *userRepository) DataFetchUpdateUser(ctx context.Context, id int16) (es *entity.Send_User, err error) {
+	query := `select * from public.user where id = $1`
+
+	list, err := u.fetchUpdateUser(ctx, query, id)
+	if err != nil {
+		log.Fatalln("Error when consulting data in query database", err)
+		return
+	}
+
+	pkg := &entity.Send_User{}
+	if len(list) > 0 {
+		pkg = &list[0]
+	} else {
+		return nil, middleware.ErrorNotFound
+	}
+
+	return pkg, nil
+
+}
+
+func (u *userRepository) fetchUpdateUser(ctx context.Context, query string, args ...interface{}) (es []entity.Send_User, err error) {
+	rows, err := u.Conn.QueryContext(ctx, query, args...)
+	if err != nil {
+		log.Fatalln("Error in consult data query", err)
+		return
+	}
+
+	defer func() {
+		errRow := rows.Close()
+		if errRow != nil {
+			log.Fatalln("Error in line closed", err)
+		}
+	}()
+
+	res := make([]entity.Send_User, 0)
+	for rows.Next() {
+		str := entity.Send_User{}
+		err = rows.Scan(
+			&str.ID,
+			&str.Name,
+			&str.Email,
+			&str.Password,
+			&str.Picture,
+			&str.Newsletter,
+		)
+
+		if err != nil {
+			log.Fatalln("No Scanner Error", err)
+			return
+		}
+
+		res = append(res, str)
+	}
+
+	return res, nil
 }
 
 func (u *userRepository) CreateUser(es *entity.Users) (ds *entity.Users, err error) {
