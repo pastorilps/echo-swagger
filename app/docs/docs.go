@@ -256,9 +256,9 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:3001",
+	Host:             "pastorilps.github.io/echo-swagger",
 	BasePath:         "/",
-	Schemes:          []string{"http"},
+	Schemes:          []string{"https"},
 	Title:            "Echo Swagger API",
 	Description:      "This is a sample server server.",
 	InfoInstanceName: "swagger",

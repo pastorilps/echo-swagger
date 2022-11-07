@@ -37,9 +37,9 @@ func init() {
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:3001
+// @host pastorilps.github.io/echo-swagger
 // @BasePath /
-// @schemes http
+// @schemes https
 func main() {
 	var (
 		dbHost = os.Getenv("HOST_DATABASE")
