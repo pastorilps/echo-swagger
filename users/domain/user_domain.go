@@ -11,6 +11,7 @@ type UserUseCase interface {
 	GetUserById(id int16) (*entity.Users, error)
 	CreateUsers(es *entity.Users) (*entity.Users, error)
 	UpdateUser(ctx context.Context, er *entity.Receive_User) (es *entity.Send_User, err error)
+	DeleteUser(id int16) (err error)
 }
 
 type UserRepository interface {
@@ -19,4 +20,5 @@ type UserRepository interface {
 	CreateUser(es *entity.Users) (ds *entity.Users, err error)
 	UpdateUser(ctx context.Context, er *entity.Receive_User) (err error)
 	DataFetchUpdateUser(ctx context.Context, id int16) (es *entity.Send_User, err error)
+	DeleteUser(id int16) (err error)
 }

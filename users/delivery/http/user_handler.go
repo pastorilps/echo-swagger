@@ -32,8 +32,19 @@ func NewUserHandler(e *echo.Echo, uc domain.UserUseCase) {
 	e.GET("/v1/users/:id", handler.GetUserById)
 	e.POST("/v1/users/create", handler.CreateUser)
 	e.PUT("/v1/users/update/:id", handler.UpdateUser)
+	e.DELETE("/v1/users/delete/:id", handler.DeleteUser)
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
+}
+
+func (u *UserHandler) DeleteUser(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	err = u.AUsecase.DeleteUser(int16(id))
+	if err != nil {
+		return c.JSON(getStatusCode(err), Response{Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, id)
 }
 
 func (u *UserHandler) UpdateUser(c echo.Context) error {

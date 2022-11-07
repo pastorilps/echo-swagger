@@ -20,6 +20,33 @@ func NewUserRepo(Conn *sql.DB) domain.UserRepository {
 	return &userRepository{Conn}
 }
 
+func (u *userRepository) DeleteUser(id int16) (err error) {
+	query := `delete from public.user where id = $1`
+
+	stmt, err := u.Conn.Prepare(query)
+	if err != nil {
+		logrus.Error("error pushing data for database", err)
+		return
+	}
+
+	res, err := stmt.Exec(id)
+	if err != nil {
+		return
+	}
+
+	rowsAfected, err := res.RowsAffected()
+	if err != nil {
+		return
+	}
+
+	if rowsAfected != 1 {
+		logrus.Error("Weird Behavior, Total Affeced: %d", rowsAfected)
+		return
+	}
+
+	return
+}
+
 func (u *userRepository) UpdateUser(ctx context.Context, er *entity.Receive_User) (err error) {
 	query := `update public.user set name = $2, email = $3, password = $4, picture = $5, newsletter = $6 where id = $1`
 

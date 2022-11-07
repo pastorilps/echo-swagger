@@ -19,6 +19,15 @@ func NewUserUseCase(ur domain.UserRepository) domain.UserUseCase {
 	}
 }
 
+func (u *userUseCase) DeleteUser(id int16) (err error) {
+	err = u.userRepo.DeleteUser(id)
+	if err != nil {
+		return nil
+	}
+
+	return nil
+}
+
 func (u *userUseCase) UpdateUser(ctx context.Context, er *entity.Receive_User) (es *entity.Send_User, err error) {
 
 	err = u.userRepo.UpdateUser(ctx, er)
